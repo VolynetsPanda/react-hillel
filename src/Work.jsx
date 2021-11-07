@@ -1,99 +1,78 @@
 import React from "react";
-import Test from "./components/Test";
-import Block from "./components/Block";
-import DefaultInput from "./components/DefaultInput";
+import ProductItem from "./components/ProductItem";
+import CustomModal from "./components/CustomModal";
+import ProductDetails from "./components/ProductDetails";
 
 class Work extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            likes: 0,
-            move: 0,
-            step: 10,
-            text: 'on',
-            pass: '',
-            color: 'black',
-            products: []
+            products: [],
+            text: '',
+            modal: false,
+            selectProduct: null,
+            basket: [{}],
         }
-        this.changeLikes = this.changeLikes.bind(this);
-        this.onMove = this.onMove.bind(this);
-        this.changeText = this.changeText.bind(this);
-        this.press = this.press.bind(this);
+        this.changeModal = this.changeModal.bind(this);
+        this.selectedIdProduct = this.selectedIdProduct.bind(this);
+        this.findProduct = this.findProduct.bind(this);
+    }
+    changeModal(){
+        this.setState({
+            modal: !this.state.modal
+        })
+    }
+    selectedIdProduct(id){
+        this.findProduct(id)
+        this.changeModal();
+        this.setState({
+            selectProduct: id
+        })
+    }
+    findProduct(id){
+        const {basket} = this.state
+        const filter = [...basket];
+        filter.find(item => item.id === id)?.id;
 
-    }
-    changeLikes(step){
-        this.setState({
-            likes: this.state.likes + step
-        })
-    }
-    onMove(){
-        const {move, step} = this.state
-        this.setState({
-            move: move + step
-        })
-    }
-    press(){
-        // this.setState({
-        //     text: this.state.text === "on" ? 'off' : 'on'
+        // basket.map(item => {
+        //     console.log('test 0')
+        //     if(item.id == id){
+        //         console.log('test 1', ++item.count)
+        //         return {id: id, count: ++item.count}
+        //     } else {
+        //         console.log('test 2')
+        //         filter.push({id: id, count: 1})
+        //     }
         // })
-        this.forceUpdate()
-    }
-    changeText(e, key){
+        basket.push({id: id, count: 1})
+        console.log(filter)
         this.setState({
-            [key]: e.target.value
+            basket: basket
         })
     }
     componentDidMount() {
         fetch('https://fakestoreapi.com/products')
             .then(res=>res.json())
             .then(json=>{
-                console.log(json)
                 this.setState({
                     products: json
                 })
             })
     }
-    static getDerivedStateFromProps(state, props){
-        console.log('getDerivedStateFromProps', state, props)
-        return null
-    }
-    componentDidUpdate(prevProps, prevState) {
-        console.log('componentDidUpdate', prevState, this.state);
-        return  prevState.text !== this.state.text
-        // return true
-    }
-
     render() {
-        console.log('render')
-        const {pass, text, color, products} = this.state;
+        const {products, modal, selectProduct, basket} = this.state;
+        console.log(basket)
         return (
             <>
+                <CustomModal modal={modal} change={this.changeModal}>
+                    <ProductDetails idProduct={selectProduct}/>
+                </CustomModal>
                 {products.length ? products.map((item)=>
-                    <div key={item.id}>
-                        <h3>{item.title}</h3>
-                        <a href="#">Add</a>
-                    </div>) : <p>Loading...</p>
+                     <ProductItem key={item.id} item={item} change={this.selectedIdProduct}/>
+                    ) : <p>Loading...</p>
                 }
-                {/*<input type={'text'} value={text} />*/}
-                {/*<Block move={move} />*/}
-                {/*<DefaultInput*/}
-                {/*    type={'text'}*/}
-                {/*    change={(e) => this.changeText(e, 'text')}*/}
-                {/*/>*/}
-                {/*<DefaultInput*/}
-                {/*    type={'password'}*/}
-                {/*    change={(e) => this.changeText(e, 'pass')}*/}
-                {/*/>*/}
-                {/*<button onClick={this.press} style={{color: color}}>{text}</button>*/}
-                {/*{users?.map((user) =>*/}
-                {/*    <Test*/}
-                {/*        user={user}*/}
-                {/*    />*/}
-                {/*)}*/}
-
             </>
         )
     }
 }
-
 export default Work;
