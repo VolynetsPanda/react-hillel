@@ -1,0 +1,8 @@
+const ADD_USER = "ADD_USER"
+const MORE_USERS = "MORE_USERS"
+const REMOVE_USER = "REMOVE_USER"
+export {
+    ADD_USER,
+    REMOVE_USER,
+    MORE_USERS
+}
