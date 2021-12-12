@@ -15,6 +15,7 @@ import axios from "axios";
 export const fetchUsers = () => {
     return async (dispatch) => {
         const {data} = await axios.get(API.products)
+        console.log(data)
         dispatch(moreUsersAction(data))
     }
 }

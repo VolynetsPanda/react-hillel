@@ -2,6 +2,7 @@ import './App.css';
 import {useDispatch, useSelector} from "react-redux";
 import {addCounterAction, removeCounterAction} from "./modules/counter/reducer";
 import {fetchUsers} from "./api/users";
+import User from "./components/User/User";
 
 function App() {
   const dispatch = useDispatch()
@@ -33,7 +34,7 @@ function App() {
       </div>
       <div className="container">
         {users.length
-          ? users.map(elem => <div onClick={() => removeUser(elem.id)} key={elem.id}>{elem.title}</div>)
+          ? users.map((elem, key) => <User key={key} user={elem} removeUser={removeUser}/>)
           : <h3>Empty</h3>
         }
       </div>
